@@ -47,6 +47,29 @@ import sys
 
 ###
 
+def build_dict(filename):
+  count = {}
+  with open(filename, 'rU') as file:
+    data = file.read().lower()
+  words = data.split()
+  for word in words:
+    if word not in count:
+      count[word] = 1
+    else:
+      count[word] += 1
+  return count
+
+def print_words(filename):
+  wordcount = build_dict(filename)
+  for word, count in sorted(wordcount.items()):
+    print word, count
+
+def print_top(filename):
+  wordcount = build_dict(filename)
+  top = sorted(wordcount.items(), key = lambda word: word[1], reverse = True)
+  for word, count in top[:20]:
+    print word, count
+
 # This basic command line argument parsing code is provided and
 # calls the print_words() and print_top() functions which you must define.
 def main():

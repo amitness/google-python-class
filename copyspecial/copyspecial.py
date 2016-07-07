@@ -17,8 +17,14 @@ import commands
 
 # +++your code here+++
 # Write functions and modify main() to call them
-
-
+def findspecial(dir):
+  special_files = []
+  files = os.listdir(dir)
+  pattern = r'\w+__\w+__.\w+'
+  for filename in files:
+    if re.match(pattern, filename):
+      special_files.append(os.path.join(dir,filename))
+  return special_files
 
 def main():
   # This basic command line argument parsing code is provided.
@@ -50,6 +56,24 @@ def main():
 
   # +++your code here+++
   # Call your functions
-  
+  special_files = []
+  for path in args:
+   special_files.extend(findspecial(path))
+  special_files = map(os.path.abspath, special_files)
+  if todir:
+    dest = os.path.abspath(todir)
+    if os.path.exists(dest):
+      os.mkdir(dest)
+    for src in special_files:
+      shutil.copy(src, dest)
+  elif tozip:
+    topzip = os.path.abspath(tozip)
+    command = 'zip -j ' + tozip + ' ' + ' '.join(special_files)
+    status, output = commands.getstatusoutput(command)
+    if status:
+      sys.stderr.write(output)
+  else:
+    print '\n'.join(special_files)
+
 if __name__ == "__main__":
   main()
